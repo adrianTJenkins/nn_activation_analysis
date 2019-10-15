@@ -9,19 +9,29 @@ class NN:
         self.training_outputs = training_out
         self.synaptic_weights = 2 * np.random.random((3, 1)) - 1
     
+    #Sigmoid Function
     def sigmoid(self, x, is_derivative = False):
         if is_derivative:
             return x * (1 - x)
         return 1 / (1 + np.e ** (-x))
 
-    def tanH(self, x, is_derivative = False):
+    #tanh Function
+    def tanh(self, x, is_derivative = False):
         if is_derivative:
             return 1 - np.tanh(x) ** 2
         else:
             return np.tanh(x)
 
-    
-        
+    #Relu Function
+    def relu(self, x, is_derivative = False):
+        if is_derivative:
+            if x.any() > 0:
+                x = 1
+            else:
+                x = 0
+            return x
+        else:
+            return np.maximum(0,x)
 
     def learn(self, activation_method, x_value = 0, bool_value = False):
         print('Random starting synaptic weights: ')
@@ -53,8 +63,10 @@ class NN:
     def main(self):
         if self.activation_name == "sigmoid":
             self.learn(self.sigmoid)
-        elif self.activation_name == "tanH":
-            self.learn(self.tanH)
+        elif self.activation_name == "tanh":
+            self.learn(self.tanh)
+        elif self.activation_name == "relu":
+            self.learn(self.relu)
         else:
             print(self.activation_name)
 
@@ -68,5 +80,8 @@ t_out = np.array([[0,1,1,0]]).T
 sig_net = NN("sigmoid", t_in, t_out)
 sig_net.main()
 
-tan_net = NN("tanH", t_in, t_out)
+tan_net = NN("tanh", t_in, t_out)
 tan_net.main()
+
+relu_net = NN("relu", t_in, t_out)
+relu_net.main()
