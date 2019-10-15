@@ -25,33 +25,28 @@ class NN:
     #Relu Function
     def relu(self, x, is_derivative = False):
         if is_derivative:
-            if x.any() > 0:
-                x = 1
-            else:
-                x = 0
-            return x
+            return np.sign(x)
         else:
-            return np.maximum(0,x)
+            return np.maximum(0, x)
 
     def learn(self, activation_method, x_value = 0, bool_value = False):
+        print("\nActivation Function: " + self.activation_name)
+        print("-----------------------------------------------")
         print('Random starting synaptic weights: ')
         print(self.synaptic_weights)
         for i in range(100000):
             input_layer = self.training_inputs
 
-            x_value = np.dot(input_layer, self.synaptic_weights)
             bool_value = False
-            outputs = activation_method(x_value, bool_value)
+            outputs = activation_method(np.dot(input_layer, self.synaptic_weights), bool_value)
 
             error = self.training_outputs - outputs
 
-            x_value = outputs
             bool_value = True
-            adjustments = error * activation_method(x_value, bool_value)
+            adjustments = error * activation_method(outputs, bool_value)
 
-            self.synaptic_weights += np.dot(input_layer.T, adjustments)
+            self.synaptic_weights = self.synaptic_weights + np.dot(input_layer.T, adjustments)
 
-        print("\nActivation Function: " + self.activation_name)
         print('\nSynaptic weights after training\n')
         print(self.synaptic_weights)
 
