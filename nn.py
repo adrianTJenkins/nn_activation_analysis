@@ -1,41 +1,59 @@
 import numpy as np
 
-def sigmoid(x, is_derivative = False):
-    if is_derivative:
-        return x * (1 - x)
-    return 1 / (1 + np.exp(-x))
+class NN:
 
+    def __init__(self, name):
+        self.activation_name = name
 
-training_inputs = np.array([[0,0,1],
-                            [1,1,1],
-                            [1,0,1],
-                            [0,1,1]])
+    activation_name = ""
+    training_inputs = np.array([[0,0,1],
+                                [1,1,1],
+                                [1,0,1],
+                                [0,1,1]])
 
-training_outputs = np.array([[0,1,1,0]]).T
+    training_outputs = np.array([[0,1,1,0]]).T
 
-np.random.seed(1)
+    np.random.seed(1)
 
-synaptic_weights = 2 * np.random.random((3, 1)) - 1
+    synaptic_weights = 2 * np.random.random((3, 1)) - 1
+    def sigmoid(self, x, is_derivative = False):
+        if is_derivative:
+            return x * (1 - x)
+        return 1 / (1 + np.exp(-x))
 
-print('Random starting synaptic weights: ')
-print(synaptic_weights)
+    print('Random starting synaptic weights: ')
+    print(synaptic_weights)
+        
 
-for i in range(100000):
+    def learn(self, activation_method, x_value = 0, bool_value = False):
+        for i in range(100000):
 
-    input_layer = training_inputs
+            input_layer = self.training_inputs
 
-    #dot method multiplies matrices
-    outputs = sigmoid(np.dot(input_layer, synaptic_weights), False)
+            x_value = np.dot(input_layer, self.synaptic_weights)
+            bool_value = False
+            outputs = activation_method(x_value, bool_value)
 
-    error = training_outputs - outputs
-    
-    adjustments = error * sigmoid(outputs, True)
+            error = self.training_outputs - outputs
 
-    synaptic_weights += np.dot(input_layer.T, adjustments)
+            x_value = outputs
+            bool_value = True
+            adjustments = error * activation_method(x_value, bool_value)
 
-print('Sigmoid\n')
-print('Synaptic weights after training')
-print(synaptic_weights)
+            self.synaptic_weights += np.dot(input_layer.T, adjustments)
 
-print('Outputs after training')
-print(outputs)
+        print(self.activation_name)
+        print('Synaptic weights after training')
+        print(self.synaptic_weights)
+
+        print('\nOutputs after training')
+        print(outputs)
+
+    def main(self):
+        if self.activation_name == "sigmoid":
+            self.learn(self.sigmoid)
+        else:
+            print(self.activation_name)
+
+n = NN("sigmoid")
+n.main()
